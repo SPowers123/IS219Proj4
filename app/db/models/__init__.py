@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     registered_on = db.Column('registered_on', db.DateTime)
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     is_admin = db.Column('is_admin', db.Boolean(), nullable=False, server_default='0')
+    recipes = db.relationship("Recipe", back_populates="users", cascade="all, delete")
 
     # `roles` and `groups` are reserved words that *must* be defined
     # on the `User` model to use group- or role-based authorization.
@@ -45,3 +46,23 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.email
+
+
+class Recipe(db.Model):
+    __tablename__ = 'recipes'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(300), nullable=True, unique=False)
+    content = db.Column(db.Text, nullable=True, unique=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    users = db.relationship("User", back_populates="recipes", uselist=False)
+
+    def __init__(self, title, content, user_id):
+        self.title = title
+        self.content = content
+        self.user_id = user_id
+
+    def get_id(self):
+        return self.id
+
+    def get_title(self):
+        return self.title
