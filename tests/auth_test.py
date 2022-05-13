@@ -60,11 +60,11 @@ def test_bad_login(client):
             ("ThisPasswordIsWayTooLongLikeSeriouslyPleaseShortenIt123", "ThisPasswordIsWayTooLongLikeSeriouslyPleaseShortenIt123")
     )
 )
-def test_bad_register(client, password, confirm):
+def test_register_incorrect(client, password, confirm):
     with client:
         # attempt to register a password that a custom validator would invalidate
         assert client.post("/register",
-                           data={"email": "bad@mail.com", "password": password, "confirm": confirm}).status_code == 200
+                           data={"email": "fail@mail.com", "password": password, "confirm": confirm}).status_code == 200
         with client.application.app_context():
             # a new entry should not have been created
             assert User.query.filter_by(email="bad@mail.com").first() is None
@@ -72,14 +72,14 @@ def test_bad_register(client, password, confirm):
 
 def test_register_matching_passwords(client):
     # Test that mismatching passwords are correctly handled
-    response = client.post("/register", data={"email": "bad@mail.com", "password": "Test123", "confirm": ""})
+    response = client.post("/register", data={"email": "fail@mail.com", "password": "Fail123", "confirm": ""})
     assert b'Passwords must match' in response.data
     # Test that mismatching passwords are correctly handled even if the field is not empty
-    response = client.post("/register", data={"email": "bad@mail.com", "password": "Test123", "confirm": "Test456"})
+    response = client.post("/register", data={"email": "fail@mail.com", "password": "Fail123", "confirm": "Fail456"})
     assert b'Passwords must match' in response.data
 
 
-def test_already_registered(client):
+def test_register_already_completed(client):
     with client:
         assert client.get("/register").status_code == 200
         response = client.post("/register",
