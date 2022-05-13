@@ -36,7 +36,7 @@ def create_app():
     app.secret_key = 'This is an INSECURE secret!! DO NOT use this in production!!'
 
     bootstrap = Bootstrap5(app)
-     app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'cosmo'
+    app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'cosmo'
     csrf = CSRFProtect(app)
 
     login_manager.init_app(app)
