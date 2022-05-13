@@ -40,7 +40,7 @@ def test_login(client):
 def test_bad_login(client):
     assert client.get("/login").status_code == 200
     response = client.post("/login",
-                           data={"email": "EmailNotInDatabase@mail.com", "password": "PasswordNotInDatabase123"})
+                           data={"email": "EmailNotFound@mail.com", "password": "PasswordNotFound123"})
     # User should be redirected back to the login after failing to log in
     assert "/login" == response.headers["Location"]
 
@@ -51,13 +51,13 @@ def test_bad_login(client):
             # password too short
             ("a", "a"),
             # password has no lowercase
-            ("TEST123", "TEST123"),
+            ("NOLOWERCASE123", "NOLOWERCASE123"),
             # password has no uppercase
-            ("test123", "test123"),
+            ("nouppercase123", "nouppercase123"),
             # password has no numbers
-            ("testtest", "testtest"),
+            ("noNumbers", "noNumbers"),
             # password too long
-            ("test123test123test123test123test123test123", "test123test123test123test123test123test123")
+            ("ThisPasswordIsWayTooLongLikeSeriouslyPleaseShortenIt123", "ThisPasswordIsWayTooLongLikeSeriouslyPleaseShortenIt123")
     )
 )
 def test_bad_register(client, password, confirm):
