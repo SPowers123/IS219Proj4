@@ -1,3 +1,4 @@
+
 from app.db.models import User
 from flask import session
 import pytest
@@ -112,4 +113,3 @@ def test_logout(client):
 def test_access_denied(client):
     assert client.post("/login", data={"email": "admin2@mail.com", "password": "Test123!"}).status_code == 302
     assert client.get("/users").status_code == 403
-
