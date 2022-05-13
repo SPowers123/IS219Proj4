@@ -36,14 +36,14 @@ def test_edit_recipe(client):
             recipe_url = "/recipes/edit/" + str(recipe_id)
         assert client.get(recipe_url).status_code == 200
         response = client.post(recipe_url, data={"recipe_title": "New Pytest",
-                                                 "recipe_content": "Automatically generated test recipe"})
+                                                 "recipe_content": "randomly generated recipe woooooo"})
         assert response.headers['Location'] == "/recipes/mine"
         with client.application.app_context():
             recipe_id = Recipe.query.filter_by(title="New Pytest").first().get_id()
             assert Recipe.query.filter_by(id=recipe_id).first().get_title() == "New Pytest"
 
 
-def test_delete_recipe(client):
+def test_remove_recipe(client):
     with client:
         assert client.post("/login", data={"email": "admin2@mail.com", "password": "Test123!"}).headers[
                    'Location'] == "/recipes/mine"
