@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+    {% from 'bootstrap5/form.html' import render_form, render_field, render_form_row %}
+
+    <div class="row">
+        <div class="col-7">
+            <h2>Register</h2>
+            {{ render_form(form) }}
+        </div>
+        <div id="message" class="col-5">
+            <div id="letter" class="red">
+                <div id="requirements">Your password requires a lowercase letter, an uppercase letter, and a number.</div>
+                <div class="progress">
+                    <div id="p-bar" class="progress-bar" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <style>
+        .invalid {
+            color: red;
+        }
+
+        .valid {
+            color: green;
+        }
+    </style>
+
+
+    <script>
+        var passwordField = document.getElementById("password");
+        var letter = document.getElementById("letter");
+        var requirements = document.getElementById("requirements");
+        var lowerCase = 0;
+        var upperCase = 0;
+        var hasNumber = 0;
+
+        passwordField.onfocus = function () {
+            var message = document.getElementById("message");
+            message.style.display = "block";
+            message.style.border = "1px solid";
+        }
+
+        passwordField.onkeyup = function ()
+        {
+            var passwordField = document.getElementById("password");
+            var progressBar = document.getElementById("p-bar");
+            var requirements = document.getElementById("requirements");
+            let lowerCaseLetters = /[a-z]/g;
+            let upperCaseLetters = /[A-Z]/g;
+            let numbers = /[0-9]/g;
+            let requirementsNeeded = "";
+
+            if(passwordField.value.match(lowerCaseLetters))
+            {
+                lowerCase = 1;
+            }
+            else
+            {
+                lowerCase = 0;
+                requirementsNeeded = "a lowercase letter";
+            }
+
+            if(passwordField.value.match(upperCaseLetters))
+            {
+                upperCase = 1;
+            }
+            else
+            {
+                upperCase = 0;
+                if(requirementsNeeded === "")
+                {
+                    requirementsNeeded = "an uppercase letter";
+                }
+                else
+                {
+                    requirementsNeeded = requirementsNeeded.concat(", an uppercase letter");
+                }
+            }
+
+            if(passwordField.value.match(numbers))
+            {
+                hasNumber = 1;
+            }
+            else
+            {
+                hasNumber = 0;
+                if(requirementsNeeded === "")
+                {
+                    requirementsNeeded = "a number";
+                }
+                else
+                {
+                    requirementsNeeded = requirementsNeeded.concat(", a number");
+                }
+            }
+
+            let validCount = (hasNumber + upperCase + lowerCase);
+            if(validCount !== 3)
+            {
+                requirements.textContent = "Your password still requires: ".concat(requirementsNeeded);
+                progressBar.style.backgroundColor = "red";
+            }
+
+            if(validCount === 0)
+            {
+                progressBar.style.width = "0%";
+            }
+            else
+            {
+                let newWidthValue = (validCount * 33) + 1;
+                if(newWidthValue === 100)
+                {
+                    requirements.textContent = "You have a valid password."
+                    progressBar.style.backgroundColor = "green";
+                }
+                progressBar.style.width =  (newWidthValue.toString()).concat("%");
+            }
+
+        }
+
+
+    </script>
+
+{% endblock %}
